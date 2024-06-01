@@ -63,7 +63,7 @@ public class Main extends Application {
         }
 
         StringBuilder results = new StringBuilder();
-        searchInDirectory(directory, searchPhrase, results);
+        searchInDirectory(directory, results, searchPhrase);
         resultArea.setText(results.toString());
     }
 
