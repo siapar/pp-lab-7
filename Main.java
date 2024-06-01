@@ -26,6 +26,7 @@ public class Main extends Application {
         resultArea = new TextArea();
         resultArea.setPrefHeight(400);
         browseButton.setOnAction(event -> browseDirectory());
+        searchButton.setOnAction(event -> searchFiles());
         HBox hBox = new HBox(10, directoryPathField, browseButton);
         VBox vBox = new VBox(10, hBox, searchField, searchButton, resultArea);
         Scene scene = new Scene(vBox, 600, 200);
@@ -39,6 +40,43 @@ public class Main extends Application {
 
         if (selectedDirectory != null) {
             directoryPathField.setText(selectedDirectory.getAbsolutePath());
+        }
+    }
+
+    private void searchFiles() {
+        String directoryPath = directoryPathField.getText();
+        String searchPhrase = searchField.getText();
+
+        if (directoryPath.isEmpty()) {
+            resultArea.setText("Please provide a directory path.");
+            return;
+        }
+
+        File directory = new File(directoryPath);
+
+        if (!directory.isDirectory()) {
+            resultArea.setText("The provided path is not a directory.");
+            return;
+        }
+
+        StringBuilder results = new StringBuilder();
+        listFilesInDirectory(directory, searchPhrase, results);
+        resultArea.setText(results.toString());
+    }
+
+    private void listFilesInDirectory(File directory, String searchPhrase, StringBuilder results) {
+        File[] files = directory.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    listFilesInDirectory(file, searchPhrase, results);
+                } else {
+                    if (file.getName().contains(searchPhrase)) {
+                        results.append(file.getAbsolutePath()).append("\n");
+                    }
+                }
+            }
         }
     }
 
