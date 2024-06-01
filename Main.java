@@ -1,4 +1,7 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -60,24 +63,38 @@ public class Main extends Application {
         }
 
         StringBuilder results = new StringBuilder();
-        listFilesInDirectory(directory, searchPhrase, results);
+        searchInDirectory(directory, searchPhrase, results);
         resultArea.setText(results.toString());
     }
 
-    private void listFilesInDirectory(File directory, String searchPhrase, StringBuilder results) {
+    private void searchInDirectory(File directory, String searchPhrase, StringBuilder results) {
         File[] files = directory.listFiles();
 
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    listFilesInDirectory(file, searchPhrase, results);
+                    searchInDirectory(file, searchPhrase, results);
                 } else {
-                    if (file.getName().contains(searchPhrase)) {
+                    if (containsPhrase(file, searchPhrase)) {
                         results.append(file.getAbsolutePath()).append("\n");
                     }
                 }
             }
         }
+    }
+
+    private boolean containsPhrase(File file, String searchPhrase) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(searchPhrase)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static void main(String[] args) {
