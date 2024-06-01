@@ -67,17 +67,14 @@ public class Main extends Application {
         resultArea.setText(results.toString());
     }
 
-    private void searchInDirectory(File directory, String searchPhrase, StringBuilder results) {
+    private void searchInDirectory(File directory, StringBuilder results, String searchPhrase) {
         File[] files = directory.listFiles();
-
         if (files != null) {
             for (File file : files) {
-                if (file.isDirectory()) {
-                    searchInDirectory(file, searchPhrase, results);
-                } else {
-                    if (containsPhrase(file, searchPhrase)) {
-                        results.append(file.getAbsolutePath()).append("\n");
-                    }
+                if (file.isFile() && containsPhrase(file, searchPhrase)) {
+                    results.append(file.getName()).append("\n");
+                } else if (file.isDirectory()) {
+                    searchInDirectory(file, results, searchPhrase);
                 }
             }
         }
