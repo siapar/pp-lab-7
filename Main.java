@@ -60,21 +60,16 @@ public class Main extends Application {
         }
 
         StringBuilder results = new StringBuilder();
-        listFilesInDirectory(directory, searchPhrase, results);
+        listFilesInDirectory(directory, results);
         resultArea.setText(results.toString());
     }
 
-    private void listFilesInDirectory(File directory, String searchPhrase, StringBuilder results) {
+    private void listFilesInDirectory(File directory, StringBuilder results) {
         File[] files = directory.listFiles();
-
         if (files != null) {
             for (File file : files) {
-                if (file.isDirectory()) {
-                    listFilesInDirectory(file, searchPhrase, results);
-                } else {
-                    if (file.getName().contains(searchPhrase)) {
-                        results.append(file.getAbsolutePath()).append("\n");
-                    }
+                if (file.isFile()) {
+                    results.append(file.getName()).append("\n");
                 }
             }
         }
